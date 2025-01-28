@@ -1,0 +1,33 @@
+    
+def create_unigram_model(corpus):
+    word_counts = Counter(corpus)
+    total_words = sum(word_counts.values())
+    unigram_model={}
+    for word,count in word_counts.items(): 
+        unigram_model[word]=count/total_words
+    return unigram_model
+
+def generate_word(unigram_model,seed_word):
+    rand_num = unigram_model[seed_word] 
+    cumulative_prob = 0
+    for word, prob in unigram_model.items():
+        cumulative_prob += prob
+        if rand_num <= cumulative_prob:
+            return word
+        
+def generate_sentence(unigram_model, seed_word):
+    next_word = generate_word(unigram_model,seed_word)
+    return next_word
+
+
+filename = "J. K. Rowling - Harry Potter 4 - The Goblet of Fire.txt"
+text = read_file(filename)
+
+corpus = preprocess_text(text)
+
+unigram_model = create_unigram_model(corpus)
+
+seed_word = "he"
+for i in range(100):
+    generated_sentence = generate_sentence(unigram_model, seed_word)
+    print(generated_sentence, end=" ")
